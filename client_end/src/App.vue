@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import NavBar from "@/components/NavBar.vue"; // 引入组件
+import NavBar from "@/components/NavBar.vue";
 
 export default defineComponent({
   components: { NavBar },

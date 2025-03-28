@@ -67,7 +67,7 @@ export default {
   // Get favorite cities' weather
   getFavorites(): Promise<WeatherData[]> {
     return new Promise((resolve) => {
-      setTimeout(() => resolve(mockData.favorites), 500); // 模拟网络延迟
+      setTimeout(() => resolve(mockData.favorites), 500); // mock latency
     });
   },
 
