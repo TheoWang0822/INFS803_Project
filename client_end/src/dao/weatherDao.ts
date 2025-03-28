@@ -28,6 +28,20 @@ const mockData = {
       high: "28°",
       low: "16°",
     },
+    {
+      city: "Wellington",
+      temp: "21°",
+      condition: "Foggy",
+      high: "24°",
+      low: "18°",
+    },
+    {
+      city: "ChristChurch",
+      temp: "18°",
+      condition: "Frosty",
+      high: "19°",
+      low: "16°",
+    },
   ],
   hotCities: [
     {
