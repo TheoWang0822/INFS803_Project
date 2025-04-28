@@ -14,7 +14,9 @@
             <span class="temp">{{ city.temp }}</span>
           </div>
           <div class="condition">{{ city.condition }}</div>
-          <div class="high-low">H:{{ city.high }} L:{{ city.low }}</div>
+          <div class="high-low">
+            H:{{ city.high }} L:{{ serverTime ? serverTime.value : "" }}
+          </div>
         </div>
       </div>
 
@@ -43,6 +45,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import weatherDao from "@/dao/weatherDao"; // key : get data via Dao
+////////////////////////////////////////////////////////////
+import { ref, onMounted } from "vue";
+import { getCurrentTime } from "@/dao/weatherDao";
+/////////////////////////////////////////////////////
 
 interface WeatherData {
   city: string;
@@ -53,6 +59,19 @@ interface WeatherData {
 }
 
 export default defineComponent({
+  setup() {
+    const serverTime = ref<string>("");
+
+    onMounted(async () => {
+      console.log("triggeredddddddddd");
+      const data = await getCurrentTime();
+      serverTime.value = data.current_time;
+    });
+
+    return {
+      serverTime,
+    };
+  },
   data() {
     return {
       favorites: [] as WeatherData[],

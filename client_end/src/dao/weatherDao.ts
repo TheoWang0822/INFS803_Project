@@ -62,6 +62,15 @@ const mockData = {
   ],
 };
 
+//////////////////////////////////////////////////////////////////
+import axios from "axios";
+// call backend interfaces
+export async function getCurrentTime() {
+  const response = await axios.get("/getStatus/");
+  return response.data;
+}
+//////////////////////////////////////////////////////////////////
+
 // 3. Achieve Dao method
 export default {
   // Get favorite cities' weather
