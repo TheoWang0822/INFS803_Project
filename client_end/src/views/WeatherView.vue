@@ -48,6 +48,7 @@ import weatherDao from "@/dao/weatherDao"; // key : get data via Dao
 ////////////////////////////////////////////////////////////
 import { ref, onMounted } from "vue";
 import { getCurrentTime } from "@/dao/weatherDao";
+
 /////////////////////////////////////////////////////
 
 interface WeatherData {

@@ -69,6 +69,16 @@ export async function getCurrentTime() {
   const response = await axios.get("/getStatus/");
   return response.data;
 }
+
+export async function getCityInfo(str: string) {
+  const response = await axios.get("/SearchCityByName/", {
+    params: {
+      cityname: str,
+    },
+  });
+  console.log(response.data);
+  return response.data;
+}
 //////////////////////////////////////////////////////////////////
 
 // 3. Achieve Dao method

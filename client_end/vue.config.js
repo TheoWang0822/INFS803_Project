@@ -7,6 +7,10 @@ module.exports = defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/SearchCityByName": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
     },
   },
 });

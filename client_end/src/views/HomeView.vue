@@ -4,7 +4,7 @@
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
     <!-- TODO : JUST FOR TESTING, WILL DELETE -->
     <button @click="goToWeatherPage" class="weather-button">
-      Check the Weather Now 🌤️
+      Check the Weather Now
     </button>
   </div>
 </template>

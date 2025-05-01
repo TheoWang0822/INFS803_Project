@@ -8,10 +8,18 @@
       class="back-button"
       @click="goToHome"
     />
-
     <div class="nav-links">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+    </div>
+
+    <div class="input-pos">
+      <a-input-search
+        v-model:value="searchValue"
+        placeholder="input search text"
+        style="width: 400px"
+        @search="onSearch"
+      />
     </div>
   </nav>
 </template>
@@ -19,6 +27,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
+import { getCityInfo } from "@/dao/weatherDao";
+
+import { ref } from "vue";
 
 export default defineComponent({
   name: "NavBar",
@@ -30,6 +41,11 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const searchValue = ref<string>("");
+    const onSearch = (searchValue: string) => {
+      console.log("use value", searchValue);
+      getCityInfo(searchValue);
+    };
 
     const goToHome = () => {
       router.push("/");
@@ -37,6 +53,8 @@ export default defineComponent({
 
     return {
       goToHome,
+      searchValue,
+      onSearch,
     };
   },
 });
@@ -82,5 +100,12 @@ export default defineComponent({
 
 .nav-links a.router-link-exact-active {
   color: #42b983;
+}
+
+.input-pos {
+  flex: 10;
+  display: flex;
+  justify-content: center;
+  padding-right: 150px;
 }
 </style>
