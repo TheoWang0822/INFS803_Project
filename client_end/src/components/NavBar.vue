@@ -42,9 +42,11 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const searchValue = ref<string>("");
-    const onSearch = (searchValue: string) => {
-      console.log("use value", searchValue);
-      getCityInfo(searchValue);
+    const onSearch = async (searchValue: string) => {
+      const response = await getCityInfo(searchValue);
+      if (Object.keys(response).length !== 0) {
+        router.push("/details");
+      }
     };
 
     const goToHome = () => {

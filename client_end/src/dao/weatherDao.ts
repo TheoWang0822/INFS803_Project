@@ -76,8 +76,8 @@ export async function getCityInfo(str: string) {
       cityname: str,
     },
   });
-  console.log(response.data);
-  return response.data;
+  console.log(response.data.cities[0]);
+  return response.data.cities;
 }
 //////////////////////////////////////////////////////////////////
 
