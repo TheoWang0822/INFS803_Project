@@ -42,14 +42,24 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const searchValue = ref<string>("");
-    const onSearch = async (searchValue: string) => {
-      const response = await getCityInfo(searchValue);
+    const onSearch = async (value: string) => {
+      const response = await getCityInfo(value);
       if (Object.keys(response).length !== 0) {
-        router.push("/details");
+        router.push({
+          name: "details",
+          query: {
+            id: response[0].id,
+            cityname: response[0].cityname,
+            country: response[0].country,
+          },
+        });
+      } else {
+        alert("No city found!");
       }
     };
 
     const goToHome = () => {
+      searchValue.value = "";
       router.push("/");
     };
 

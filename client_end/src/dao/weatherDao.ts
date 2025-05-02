@@ -76,8 +76,16 @@ export async function getCityInfo(str: string) {
       cityname: str,
     },
   });
-  console.log(response.data.cities[0]);
   return response.data.cities;
+}
+
+export async function getCityInfoById(id: number) {
+  const response = await axios.get("/GetCurrentWeatherByCity/", {
+    params: {
+      id: id,
+    },
+  });
+  return response.data;
 }
 //////////////////////////////////////////////////////////////////
 
