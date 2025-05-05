@@ -56,7 +56,7 @@ export default defineComponent({
       <div class="grid-container">
         <div class="weather-card">
           <div class="city-header">
-            <h2>{{ data.cityname }}</h2>
+            <h2>{{ tempDetail.cityname }}</h2>
             <span class="temp">{{ tempDetail.temp }}</span>
           </div>
           <div class="condition">{{ tempDetail.simp_desc }}</div>
