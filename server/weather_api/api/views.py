@@ -44,7 +44,15 @@ class GetCurrentWeatherByCityView(APIView):
         try:
             result = get_weather_by_city_id(city_id)
             if result and result.get("cityname"):
-                return Response(result, status=status.HTTP_200_OK)
+                filtered_result = {
+                    "id": result.get("id"),
+                    "cityname": result.get("cityname"),
+                    "temp": result.get("temp"),
+                    "temp_min": result.get("temp_min"),
+                    "temp_max": result.get("temp_max"),
+                    "simp_desc": result.get("simp_desc")
+                }
+                return Response(filtered_result, status=status.HTTP_200_OK)
             else:
                 return Response({"cities": []}, status=status.HTTP_200_OK)
         except Exception as e:

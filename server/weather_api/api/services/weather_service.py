@@ -39,8 +39,8 @@ def get_weather_by_city_id(city_id):
             "temp_max": str(int(data["main"]["temp_max"])),
             "sun_raise": datetime.fromtimestamp(data["sys"]["sunrise"], tz=ZoneInfo("UTC")).astimezone(local_tz).strftime("%H:%M"), #get right timezone based on lat and lon
             "sun_set": datetime.fromtimestamp(data["sys"]["sunset"], tz=ZoneInfo("UTC")).astimezone(local_tz).strftime("%H:%M"), #get right timezone based on lat and lon
-            "pressure": str(data["main"]["pressure"]),
-            "humidy": str(data["main"]["humidity"]),
+            "pressure": str(int(data["main"]["pressure"])),
+            "humidy": str(int(data["main"]["humidity"])),
             "feels_like": str(int(data["main"]["feels_like"])),
             "detail_desc": data["weather"][0]["description"],
             "simp_desc": data["weather"][0]["main"]
