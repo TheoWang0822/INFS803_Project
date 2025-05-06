@@ -87,6 +87,15 @@ export async function getCityInfoById(id: number) {
   });
   return response.data;
 }
+
+export async function getCityForecastInfoById(id: number) {
+  const response = await axios.get("/GetForecastWeatherByCity/", {
+    params: {
+      id: id,
+    },
+  });
+  return response.data;
+}
 //////////////////////////////////////////////////////////////////
 
 // 3. Achieve Dao method

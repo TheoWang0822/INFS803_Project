@@ -1,7 +1,10 @@
 <script lang="ts">
 import { useRoute } from "vue-router";
 import { defineComponent, onMounted, ref, watch } from "vue";
-import weatherDao, { getCityInfoById } from "@/dao/weatherDao";
+import weatherDao, {
+  getCityInfoById,
+  getCityForecastInfoById,
+} from "@/dao/weatherDao";
 import { LoadingOutlined } from "@ant-design/icons-vue";
 
 export default defineComponent({
@@ -11,8 +14,18 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const data = ref({});
-    const tempDetail = ref<any>(null);
+    const allData = ref<any>(null);
+    const currentDetail = ref<any>(null);
+    const forecastDetail = ref<any>(null);
     const isLoaded = ref(false);
+    const toEnglishDate = (dateString: string) => {
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = date.toLocaleDateString("en-US", {
+        month: "short",
+      });
+      return `${day}-${month}`;
+    };
 
     // seal method to handle page information change
     const handleQueryData = async () => {
@@ -20,9 +33,10 @@ export default defineComponent({
       const id = Array.isArray(route.query.id)
         ? route.query.id[0]
         : route.query.id;
-      tempDetail.value = await getCityInfoById(Number(id));
+      allData.value = await getCityForecastInfoById(Number(id));
+      currentDetail.value = allData.value.basic;
+      forecastDetail.value = allData.value.forecast;
       isLoaded.value = true;
-      console.log("handling new query", tempDetail.value);
     };
 
     // reload page
@@ -41,8 +55,10 @@ export default defineComponent({
     );
     return {
       data,
-      tempDetail,
+      currentDetail,
       isLoaded,
+      toEnglishDate,
+      forecastDetail,
     };
   },
 });
@@ -53,37 +69,60 @@ export default defineComponent({
     <!-- favorite cities -->
     <main class="content">
       <h1>City Information</h1>
-      <div class="grid-container">
-        <div class="weather-card">
+      <h2>Today</h2>
+      <div class="grid-currentDetail">
+        <div class="weather-card detail-cards">
           <div class="city-header">
-            <h2>{{ tempDetail.cityname }}</h2>
-            <span class="temp">{{ tempDetail.temp }}</span>
+            <h2>{{ currentDetail.cityname }}</h2>
+            <span class="temp">{{ currentDetail.temp }}</span>
           </div>
-          <div class="condition">{{ tempDetail.simp_desc }}</div>
+          <div class="condition">{{ currentDetail.simp_desc }}</div>
           <div class="high-low">
-            H:{{ tempDetail.temp_max }} L:{{ tempDetail.temp_min }}
+            H:{{ currentDetail.temp_max }} L:{{ currentDetail.temp_min }}
           </div>
+        </div>
+        <div class="right-block">
+          <div>Sun Raise:</div>
+          <div>Pressure:</div>
+          <div>Feels Like:</div>
+        </div>
+        <div class="right-block">
+          <div>{{ currentDetail.sun_raise }}</div>
+          <div>{{ currentDetail.pressure }}</div>
+          <div>{{ currentDetail.feels_like }}</div>
+        </div>
+        <div class="right-block">
+          <div>SunSet:</div>
+          <div>Humidity:</div>
+          <div>Detail</div>
+        </div>
+        <div class="right-block">
+          <div>{{ currentDetail.sun_set }}</div>
+          <div>{{ currentDetail.humidy }}</div>
+          <div>{{ currentDetail.detail_desc }}</div>
         </div>
       </div>
 
-      <!--      &lt;!&ndash; hot cities &ndash;&gt;
+      <!-- hot cities -->
       <section style="margin-top: 40px">
-        <h1>Hot cities</h1>
+        <h1>Weather forecast</h1>
         <div class="grid-container">
           <div
-            v-for="(city, index) in hotCities"
+            v-for="(forecast, index) in forecastDetail"
             :key="'hot-' + index"
             class="weather-card"
           >
             <div class="city-header">
-              <h2>{{ city.city }}</h2>
-              <span class="temp">{{ city.temp }}</span>
+              <h2>{{ toEnglishDate(forecast.date) }}</h2>
+              <span class="temp">{{ forecast.temp }}</span>
             </div>
-            <div class="condition">{{ city.condition }}</div>
-            <div class="high-low">H:{{ city.high }} L:{{ city.low }}</div>
+            <div class="condition">{{ forecast.simp_desc }}</div>
+            <div class="high-low">
+              H:{{ forecast.temp_max }} L:{{ forecast.temp_min }}
+            </div>
           </div>
         </div>
-      </section>-->
+      </section>
     </main>
   </div>
   <div v-else class="loading">
@@ -94,18 +133,38 @@ export default defineComponent({
 <style scoped>
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin-top: 20px;
+  padding: 0 20px;
+}
+.grid-currentDetail {
+  gap: 40px;
+  margin-top: 20px;
+  padding: 0 20px;
+  display: flex;
+}
+.detail-cards {
+  width: 24%;
+  min-width: 240px;
 }
 .content h1 {
   text-align: left;
   margin-left: 0;
   margin-top: 30px;
-  padding-left: 0;
+  padding-left: 20px;
   font-size: 1.8rem;
   color: #2c3e50;
   border-bottom: 2px solid #42b983;
+  padding-bottom: 0.5rem;
+}
+.content h2 {
+  text-align: left;
+  margin-left: 0;
+  margin-top: 30px;
+  padding-left: 20px;
+  font-size: 1.8rem;
+  color: #2c3e50;
   padding-bottom: 0.5rem;
 }
 .weather-card {
@@ -114,6 +173,7 @@ export default defineComponent({
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
+  min-width: 240px;
 }
 .city-header {
   display: flex;
@@ -135,5 +195,15 @@ export default defineComponent({
   font-size: 1.8rem;
   font-weight: bold;
   margin-top: 50px;
+}
+.right-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 20px;
+  margin-left: 50px;
+  padding-left: 20px;
+  font-size: 1.3rem;
+  line-height: 2.2rem;
 }
 </style>

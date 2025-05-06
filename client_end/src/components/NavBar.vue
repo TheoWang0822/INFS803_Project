@@ -14,12 +14,12 @@
     </div>
 
     <div class="input-pos">
-      <a-input-search
+      <!--      <a-input-search
         v-model:value="searchValue"
         placeholder="input search text"
         style="width: 400px"
         @search="onSearch"
-      />
+      />-->
       <a-select
         show-search
         v-model:value="selectedCity"
@@ -29,7 +29,7 @@
         :not-found-content="fetching ? 'Loading...' : null"
         @search="handleSearch"
         @change="handleSelect"
-        style="width: 300px"
+        style="width: 400px"
       />
     </div>
   </nav>
