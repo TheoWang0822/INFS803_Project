@@ -74,7 +74,7 @@ export default defineComponent({
         <div class="weather-card detail-cards">
           <div class="city-header">
             <h2>{{ currentDetail.cityname }}</h2>
-            <span class="temp">{{ currentDetail.temp }}</span>
+            <span class="temp">{{ currentDetail.temp }}℃</span>
           </div>
           <div class="condition">{{ currentDetail.simp_desc }}</div>
           <div class="high-low">
@@ -88,8 +88,8 @@ export default defineComponent({
         </div>
         <div class="right-block">
           <div>{{ currentDetail.sun_raise }}</div>
-          <div>{{ currentDetail.pressure }}</div>
-          <div>{{ currentDetail.feels_like }}</div>
+          <div>{{ currentDetail.pressure }}hPa</div>
+          <div>{{ currentDetail.feels_like }}℃</div>
         </div>
         <div class="right-block">
           <div>SunSet:</div>
@@ -98,7 +98,7 @@ export default defineComponent({
         </div>
         <div class="right-block">
           <div>{{ currentDetail.sun_set }}</div>
-          <div>{{ currentDetail.humidy }}</div>
+          <div>{{ currentDetail.humidy }}%</div>
           <div>{{ currentDetail.detail_desc }}</div>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default defineComponent({
           >
             <div class="city-header">
               <h2>{{ toEnglishDate(forecast.date) }}</h2>
-              <span class="temp">{{ forecast.temp }}</span>
+              <span class="temp">{{ forecast.temp }}℃</span>
             </div>
             <div class="condition">{{ forecast.simp_desc }}</div>
             <div class="high-low">
