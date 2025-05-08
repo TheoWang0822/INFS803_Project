@@ -131,6 +131,7 @@ export default defineComponent({
 .content h1 {
   text-align: left;
   margin-left: 0;
+  margin-top: 30px;
   padding-left: 0;
   font-size: 1.8rem;
   color: #2c3e50;

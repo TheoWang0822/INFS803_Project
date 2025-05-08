@@ -11,6 +11,14 @@ module.exports = defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/GetCurrentWeatherByCity": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/GetForecastWeatherByCity": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
     },
   },
 });

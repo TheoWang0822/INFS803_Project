@@ -14,11 +14,22 @@
     </div>
 
     <div class="input-pos">
-      <a-input-search
+      <!--      <a-input-search
         v-model:value="searchValue"
         placeholder="input search text"
         style="width: 400px"
         @search="onSearch"
+      />-->
+      <a-select
+        show-search
+        v-model:value="selectedCity"
+        placeholder="Search city"
+        :options="cityOptions"
+        :filter-option="false"
+        :not-found-content="fetching ? 'Loading...' : null"
+        @search="handleSearch"
+        @change="handleSelect"
+        style="width: 400px"
       />
     </div>
   </nav>
@@ -28,8 +39,12 @@
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { getCityInfo } from "@/dao/weatherDao";
-
 import { ref } from "vue";
+//////////////////////////////
+
+import { debounce } from "lodash-es"; // 推荐防抖处理，防止接口频繁调用
+
+////////////////////////////
 
 export default defineComponent({
   name: "NavBar",
@@ -42,14 +57,58 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const searchValue = ref<string>("");
-    const onSearch = async (searchValue: string) => {
-      const response = await getCityInfo(searchValue);
+    ////////////////////////////////////////////////////////////////////////////
+    const selectedCity = ref<string>("");
+    const cityOptions = ref<{ label: string; value: string }[]>([]);
+    const fetching = ref(false);
+
+    const handleSearch = debounce(async (input: string) => {
+      if (input.length < 3) {
+        cityOptions.value = [];
+        return;
+      }
+      fetching.value = true;
+      try {
+        const response = await getCityInfo(input); // 假设是数组
+        cityOptions.value = response.slice(0, 10).map((city: any) => ({
+          label: `${city.cityname}, ${city.country}`,
+          value: String(city.id),
+        }));
+      } catch (e) {
+        console.error("City search failed", e);
+      } finally {
+        fetching.value = false;
+      }
+    }, 300); // 300ms 防抖
+
+    const handleSelect = (value: string) => {
+      router.push({
+        name: "details",
+        query: {
+          id: value,
+        },
+      });
+    };
+    ////////////////////////////////////////////////////////////////////////////////
+    const onSearch = async (value: string) => {
+      const response = await getCityInfo(value);
       if (Object.keys(response).length !== 0) {
-        router.push("/details");
+        router.push({
+          name: "details",
+          query: {
+            id: response[0].id,
+            cityname: response[0].cityname,
+            country: response[0].country,
+          },
+        });
+      } else {
+        alert("No city found!");
       }
     };
 
     const goToHome = () => {
+      searchValue.value = "";
+      selectedCity.value = "";
       router.push("/");
     };
 
@@ -57,6 +116,11 @@ export default defineComponent({
       goToHome,
       searchValue,
       onSearch,
+      selectedCity,
+      cityOptions,
+      fetching,
+      handleSearch,
+      handleSelect,
     };
   },
 });
