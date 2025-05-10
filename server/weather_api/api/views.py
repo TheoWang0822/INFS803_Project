@@ -4,13 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 from datetime import datetime
-from .models import CityList
+from .models import CityList, User
 from api.services.weather_service import get_weather_by_city_id, get_forecast_by_city_id
+from django.contrib.auth.hashers import make_password, check_password
 
 
 class StatusView(APIView):
     renderer_classes = [JSONRenderer]
-
     def get(self, request):
         current_time = datetime.now().isoformat()
         return Response(
@@ -35,7 +35,6 @@ class SearchCityByNameView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 class GetCurrentWeatherByCityView(APIView):
-
     def get(self, request):
         city_id = request.query_params.get('id', None)
         if not city_id:
@@ -75,6 +74,56 @@ class GetForecastWeatherByCityView(APIView):
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({"cities": []}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        
+class RegisterView(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            username = data.get("username")
+            password = data.get("password")
+            avatar_id = data.get("avatar_id")
+            email = data.get("email")
+
+            if not all([username, password, email]):
+                return Response({"error": "Missing required fields"}, status=status.HTTP_404_NOT_FOUND)
+
+            if User.objects.filter(username=username).exists():
+                return Response({"error": "Username already taken"}, status=status.HTTP_404_NOT_FOUND)
+
+            if User.objects.filter(email=email).exists():
+                return Response({"error": "Email already in use"}, status=status.HTTP_404_NOT_FOUND)
+
+            pwd_hash = make_password(password)
+
+            User.objects.create(
+                username=username,
+                pwd_hash=pwd_hash,
+                avatar_id=avatar_id,
+                email=email
+            )
+
+            return Response({"success": True}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        
+class LoginView(APIView):
+    def post(self, request):
+        try:
+            username = request.data.get("username")
+            password = request.data.get("password")
+
+            if not username or not password:
+                return Response({"error": "Username and password are required"}, status=status.HTTP_404_NOT_FOUND)
+
+            user = User.objects.filter(username=username).first()
+            if user and check_password(password, user.pwd_hash):
+                return Response({"success": True}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid username or password"}, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
