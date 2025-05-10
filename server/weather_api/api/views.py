@@ -6,7 +6,7 @@ from rest_framework.renderers import JSONRenderer
 from datetime import datetime
 from .models import CityList, User
 from api.services.weather_service import get_weather_by_city_id, get_forecast_by_city_id
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 
 class StatusView(APIView):
@@ -106,6 +106,24 @@ class RegisterView(APIView):
             )
 
             return Response({"success": True}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        
+class LoginView(APIView):
+    def post(self, request):
+        try:
+            username = request.data.get("username")
+            password = request.data.get("password")
+
+            if not username or not password:
+                return Response({"error": "Username and password are required"}, status=status.HTTP_404_NOT_FOUND)
+
+            user = User.objects.filter(username=username).first()
+            if user and check_password(password, user.pwd_hash):
+                return Response({"success": True}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid username or password"}, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
