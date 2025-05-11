@@ -1,7 +1,3 @@
-// src/dao/weatherDao.ts
-
-// 1. Define the weather Data
-// TODO: modify this after negotiate with James
 interface WeatherData {
   city: string;
   temp: string;
@@ -10,8 +6,6 @@ interface WeatherData {
   low: string;
 }
 
-// 2. Mocked local data (to replace the real API)
-// TODO: modify this after negotiate with James
 const mockData = {
   favorites: [
     {
@@ -62,9 +56,7 @@ const mockData = {
   ],
 };
 
-//////////////////////////////////////////////////////////////////
 import axios from "axios";
-// call backend interfaces
 export async function getCurrentTime() {
   const response = await axios.get("/getStatus/");
   return response.data;
@@ -96,18 +88,14 @@ export async function getCityForecastInfoById(id: number) {
   });
   return response.data;
 }
-//////////////////////////////////////////////////////////////////
 
-// 3. Achieve Dao method
 export default {
-  // Get favorite cities' weather
   getFavorites(): Promise<WeatherData[]> {
     return new Promise((resolve) => {
       setTimeout(() => resolve(mockData.favorites), 500); // mock latency
     });
   },
 
-  // Get hot cities' weather
   getHotCities(): Promise<WeatherData[]> {
     return new Promise((resolve) => {
       setTimeout(() => resolve(mockData.hotCities), 500);

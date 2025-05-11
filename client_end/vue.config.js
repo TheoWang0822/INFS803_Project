@@ -19,6 +19,14 @@ module.exports = defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/Login": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/register": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
     },
   },
 });

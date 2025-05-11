@@ -14,12 +14,6 @@
     </div>
 
     <div class="input-pos">
-      <!--      <a-input-search
-        v-model:value="searchValue"
-        placeholder="input search text"
-        style="width: 400px"
-        @search="onSearch"
-      />-->
       <a-select
         show-search
         v-model:value="selectedCity"
@@ -32,6 +26,13 @@
         style="width: 400px"
       />
     </div>
+    <div class="login" @click="onRightClicked">
+      <template v-if="!isLoggedIn">
+        <UserOutlined />
+        Login
+      </template>
+      <template v-else> </template>
+    </div>
   </nav>
 </template>
 
@@ -42,11 +43,15 @@ import { getCityInfo } from "@/dao/weatherDao";
 import { ref } from "vue";
 //////////////////////////////
 
-import { debounce } from "lodash-es"; // 推荐防抖处理，防止接口频繁调用
+import { debounce } from "lodash-es";
+import { UserOutlined } from "@ant-design/icons-vue";
 
 ////////////////////////////
 
 export default defineComponent({
+  components: {
+    UserOutlined,
+  },
   name: "NavBar",
   props: {
     showBackButton: {
@@ -61,6 +66,7 @@ export default defineComponent({
     const selectedCity = ref<string>("");
     const cityOptions = ref<{ label: string; value: string }[]>([]);
     const fetching = ref(false);
+    const isLoggedIn = ref(false);
 
     const handleSearch = debounce(async (input: string) => {
       if (input.length < 3) {
@@ -79,7 +85,14 @@ export default defineComponent({
       } finally {
         fetching.value = false;
       }
-    }, 300); // 300ms 防抖
+    }, 300); //300ms
+
+    const onRightClicked = () => {
+      if (isLoggedIn.value) {
+        return;
+      }
+      router.push("/login");
+    };
 
     const handleSelect = (value: string) => {
       router.push({
@@ -121,6 +134,9 @@ export default defineComponent({
       fetching,
       handleSearch,
       handleSelect,
+      UserOutlined,
+      onRightClicked,
+      isLoggedIn,
     };
   },
 });
@@ -173,5 +189,16 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   padding-right: 150px;
+}
+
+.login {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
+  font-size: 20px;
+  color: #333;
+  position: absolute;
+  right: 60px;
 }
 </style>

@@ -14,9 +14,7 @@
             <span class="temp">{{ city.temp }}</span>
           </div>
           <div class="condition">{{ city.condition }}</div>
-          <div class="high-low">
-            H:{{ city.high }} L:{{ serverTime ? serverTime : "" }}
-          </div>
+          <div class="high-low">H:{{ city.high }} L:{{ city.low }}</div>
         </div>
       </div>
 
@@ -61,16 +59,12 @@ interface WeatherData {
 
 export default defineComponent({
   setup() {
-    const serverTime = ref<string>("");
     const favorites = ref<WeatherData[]>([]);
     const hotCities = ref<WeatherData[]>([]);
     onMounted(async () => {
-      const data = await getCurrentTime();
-      serverTime.value = data.current_time;
       favorites.value = await weatherDao.getFavorites();
     });
     return {
-      serverTime,
       favorites,
       hotCities,
     };

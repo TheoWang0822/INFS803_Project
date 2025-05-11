@@ -66,7 +66,6 @@ export default defineComponent({
 
 <template>
   <div v-if="isLoaded" class="weather-app">
-    <!-- favorite cities -->
     <main class="content">
       <h1>City Information</h1>
       <h2>Today</h2>
