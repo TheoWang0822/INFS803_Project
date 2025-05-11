@@ -112,18 +112,25 @@ class RegisterView(APIView):
         
 class LoginView(APIView):
     def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        if not username or not password:
+            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(username=username).first()
+        if user and check_password(password, user.pwd_hash):
+
+            request.session['user_id'] = user.id
+            request.session.set_expiry(60 * 60 * 24 * 30) 
+            return Response({"success": True}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Invalid username or password"}, status=status.HTTP_404_NOT_FOUND)
+        
+class LogoutView(APIView):
+    def post(self, request):
         try:
-            username = request.data.get("username")
-            password = request.data.get("password")
-
-            if not username or not password:
-                return Response({"error": "Username and password are required"}, status=status.HTTP_404_NOT_FOUND)
-
-            user = User.objects.filter(username=username).first()
-            if user and check_password(password, user.pwd_hash):
-                return Response({"success": True}, status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "Invalid username or password"}, status=status.HTTP_404_NOT_FOUND)
-
+            request.session.flush()
+            return Response({"success": True}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

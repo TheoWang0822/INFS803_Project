@@ -1,5 +1,5 @@
 from django.urls import re_path
-from api.views import StatusView, SearchCityByNameView, GetCurrentWeatherByCityView, GetForecastWeatherByCityView, RegisterView, LoginView
+from api.views import StatusView, SearchCityByNameView, GetCurrentWeatherByCityView, GetForecastWeatherByCityView, RegisterView, LoginView, LogoutView
 
 urlpatterns = [
     re_path(r'^GetStatus/?$', StatusView.as_view(), name='get-status'),
@@ -8,4 +8,5 @@ urlpatterns = [
     re_path(r'^GetForecastWeatherByCity/?$', GetForecastWeatherByCityView.as_view(), name='get-forecast-weather-by-city'),
     re_path(r'^Register/?$', RegisterView.as_view(), name='register'),
     re_path(r'^Login/?$', LoginView.as_view(), name='login'),
+    re_path(r'^Logout/?$', LogoutView.as_view(), name='logout')
 ]
