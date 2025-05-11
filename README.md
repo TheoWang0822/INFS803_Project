@@ -40,6 +40,7 @@ source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
 sqlite3 db.sqlite3
 .tables # Check all the tables
+..headers on # show column name
 ```
 ```sql
 select * from api_citylist limit 10; #Check top 10 cities from citylist table
