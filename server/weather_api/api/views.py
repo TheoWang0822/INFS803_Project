@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 from datetime import datetime
-from .models import CityList, User
+from .models import CityList, User, UserFavorite
 from api.services.weather_service import get_weather_by_city_id, get_forecast_by_city_id
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -132,5 +132,37 @@ class LogoutView(APIView):
         try:
             request.session.flush()
             return Response({"success": True}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        
+class GetUserProfileView(APIView):
+    def get(self, request):
+        try:
+            user_id = request.session.get('user_id')
+            if not user_id:
+                return Response({}, status=status.HTTP_200_OK)
+
+            user = User.objects.filter(id=user_id).first()
+            if not user:
+                return Response({}, status=status.HTTP_200_OK)
+
+            favorites = UserFavorite.objects.filter(user_id=user.id)
+            city_ids = [fav.city_id for fav in favorites]
+            cities = CityList.objects.filter(id__in=city_ids)
+
+            city_data = [
+                {"id": city.id, "cityname": city.cityname, "country": city.country}
+                for city in cities
+            ]
+
+            return Response({
+                "basic": {
+                    "username": user.username,
+                    "avatar_id": str(user.avatar_id) if user.avatar_id else "",
+                    "email": user.email
+                },
+                "favorite_cities": city_data
+            }, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
