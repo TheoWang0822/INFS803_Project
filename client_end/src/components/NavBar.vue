@@ -26,20 +26,21 @@
         style="width: 400px"
       />
     </div>
-    <div class="login" @click="onRightClicked">
-      <template v-if="!isLoggedIn">
-        <UserOutlined />
+    <div class="login">
+      <template v-if="userInfo">
+        <UserOutlined @click="onRightClicked" />
         Login
       </template>
-      <template v-else> </template>
+      <template v-else><UserOutlined @click="logout" /> Logout </template>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getCityInfo } from "@/dao/weatherDao";
+import { GetUserInfo, Logout } from "@/dao/userDao";
 import { ref } from "vue";
 //////////////////////////////
 
@@ -67,7 +68,24 @@ export default defineComponent({
     const cityOptions = ref<{ label: string; value: string }[]>([]);
     const fetching = ref(false);
     const isLoggedIn = ref(false);
-
+    const userInfo = ref<null | { username: string }>(null);
+    async function checkIsLoggedIn() {
+      try {
+        userInfo.value = await GetUserInfo();
+      } catch {
+        userInfo.value = null;
+      }
+    }
+    async function logout() {
+      const logoutCB = () => {
+        userInfo.value = null;
+      };
+      Logout(logoutCB);
+    }
+    onMounted(() => {
+      checkIsLoggedIn();
+    });
+    //async function logout(){}
     const handleSearch = debounce(async (input: string) => {
       if (input.length < 3) {
         cityOptions.value = [];
@@ -137,6 +155,8 @@ export default defineComponent({
       UserOutlined,
       onRightClicked,
       isLoggedIn,
+      userInfo,
+      logout,
     };
   },
 });

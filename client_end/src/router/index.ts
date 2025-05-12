@@ -31,13 +31,13 @@ const routes: Array<RouteRecordRaw> = [
     component: DetailsView,
   },
   {
-    path: "/login",
-    name: "login",
+    path: "/Login",
+    name: "Login",
     component: LoginView,
   },
   {
-    path: "/register",
-    name: "register",
+    path: "/Register",
+    name: "Register",
     component: RegisterView,
   },
 ];

@@ -1,10 +1,20 @@
 import axios from "axios";
 
-export async function login(username: string, password: string) {
-  return axios.post("/Login", {
-    username,
-    password,
+export function creatAPI() {
+  const api = axios.create({
+    baseURL: "/",
+    withCredentials: true,
   });
+  return api;
+}
+
+export async function GetUserInfo() {
+  const api = axios.create({
+    baseURL: "/",
+    withCredentials: true,
+  });
+  const res = await api.get("/GetUserProfile/");
+  return res.data;
 }
 
 export async function Register(
@@ -15,7 +25,7 @@ export async function Register(
   cb: () => void
 ) {
   try {
-    const data = await axios.post("/register", {
+    const data = await axios.post("/Register/", {
       username,
       password,
       avatar_id,
@@ -30,5 +40,45 @@ export async function Register(
   } catch (error) {
     console.log("出错了");
     console.log(error);
+  }
+}
+
+export async function Login(
+  username: string,
+  password: string,
+  cb: () => void
+) {
+  try {
+    const data = await axios.post(
+      "/Login/",
+      {
+        username,
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    if (data.status == 200) {
+      console.log("登录成功");
+      console.log(data.data);
+      cb();
+    } else {
+      alert("登录失败");
+    }
+  } catch (error) {
+    console.log("登录出错了");
+    console.log(error);
+  }
+}
+export async function Logout(cb: () => void) {
+  const api = axios.create({
+    baseURL: "/",
+    withCredentials: true,
+  });
+  try {
+    await api.post("/Logout/");
+  } finally {
+    cb();
   }
 }

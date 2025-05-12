@@ -23,11 +23,17 @@
 <script setup lang="ts">
 import { watch, ref } from "vue";
 import { useRouter } from "vue-router";
+import { Login } from "@/dao/userDao";
+
 const router = useRouter();
 const username = ref<string>("");
 const password = ref<string>("");
+const cb = () => {
+  router.push("/");
+};
 const OnLoginClicked = () => {
   console.log("clicked");
+  Login(username.value, password.value, cb);
 };
 const OnRegisterClicked = () => {
   router.push("/register");

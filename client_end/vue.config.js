@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     proxy: {
-      "/getStatus": {
+      "/GetStatus": {
         target: "http://localhost:8000",
         changeOrigin: true,
       },
@@ -23,7 +23,15 @@ module.exports = defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
-      "/register": {
+      "/Register": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/GetUserProfile ": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/Logout ": {
         target: "http://localhost:8000",
         changeOrigin: true,
       },
