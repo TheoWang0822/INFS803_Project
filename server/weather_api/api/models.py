@@ -55,3 +55,18 @@ class CityWeatherForecast(models.Model):
     temp_max = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     simple_desc = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+'''
+Favorite cities
+1. 2193733 Auckland
+2. 5128581 New York
+3. 2643743 London
+4. 2988507 Paris
+5. 1816670 Beijing
+6. 1850147 Tokyo
+7. 292223 Dubai
+8. 1880252 Singapore
+9. 3882428 Los Angeles
+10. 1819729 Hong Kong
+'''
