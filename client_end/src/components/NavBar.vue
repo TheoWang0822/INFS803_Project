@@ -27,7 +27,7 @@
       />
     </div>
     <div class="login">
-      <template v-if="userInfo">
+      <template v-if="!userInfo">
         <UserOutlined @click="onRightClicked" />
         Login
       </template>
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { getCityInfo } from "@/dao/weatherDao";
 import { GetUserInfo, Logout } from "@/dao/userDao";
@@ -84,6 +84,10 @@ export default defineComponent({
     }
     onMounted(() => {
       checkIsLoggedIn();
+      window.addEventListener("user-logged-in", checkIsLoggedIn);
+    });
+    onBeforeUnmount(() => {
+      window.removeEventListener("user-logged-in", checkIsLoggedIn);
     });
     //async function logout(){}
     const handleSearch = debounce(async (input: string) => {

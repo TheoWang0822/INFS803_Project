@@ -8,13 +8,26 @@ export function creatAPI() {
   return api;
 }
 
+function isEmptyObject(obj: any): boolean {
+  return !(obj && typeof obj === "object" && "basic" in obj);
+}
+
 export async function GetUserInfo() {
-  const api = axios.create({
-    baseURL: "/",
-    withCredentials: true,
-  });
-  const res = await api.get("/GetUserProfile/");
-  return res.data;
+  const api = creatAPI();
+  try {
+    const res = await api.get("/GetUserProfile/", {
+      withCredentials: true,
+    });
+    console.log("测试数据11:", res);
+    console.log("测试数据22:", isEmptyObject(res.data));
+    if (isEmptyObject(res.data)) {
+      return null;
+    }
+    return res.data;
+  } catch (error) {
+    console.error("GetUserInfo error: ", error);
+  }
+  return null;
 }
 
 export async function Register(
@@ -62,6 +75,7 @@ export async function Login(
     if (data.status == 200) {
       console.log("登录成功");
       console.log(data.data);
+      window.dispatchEvent(new Event("user-logged-in"));
       cb();
     } else {
       alert("登录失败");
@@ -77,7 +91,7 @@ export async function Logout(cb: () => void) {
     withCredentials: true,
   });
   try {
-    await api.post("/Logout/");
+    await api.post("/Logout/", {}, { withCredentials: true });
   } finally {
     cb();
   }

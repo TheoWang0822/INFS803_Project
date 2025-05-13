@@ -27,11 +27,11 @@ module.exports = defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
-      "/GetUserProfile ": {
+      "/GetUserProfile": {
         target: "http://localhost:8000",
         changeOrigin: true,
       },
-      "/Logout ": {
+      "/Logout": {
         target: "http://localhost:8000",
         changeOrigin: true,
       },
