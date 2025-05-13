@@ -21,16 +21,22 @@ class StatusView(APIView):
 class SearchCityByNameView(APIView):
     def get(self, request):
         try:
+            is_default = request.query_params.get('is_default', '').strip()
             cityname = request.query_params.get('cityname', '').strip()
-            if not cityname:
+
+            if is_default == '1':
+                city_queryset = CityList.objects.filter(is_default=True)
+            elif cityname:
+                city_queryset = CityList.objects.filter(cityname__icontains=cityname)
+            else:
                 return Response({"cities": []}, status=status.HTTP_200_OK)
 
-            city_queryset = CityList.objects.filter(cityname__icontains=cityname)
             cities = [
                 {"id": city.id, "cityname": city.cityname, "country": city.country}
                 for city in city_queryset
             ]
             return Response({"cities": cities}, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
