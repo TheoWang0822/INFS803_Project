@@ -21,16 +21,22 @@ class StatusView(APIView):
 class SearchCityByNameView(APIView):
     def get(self, request):
         try:
+            is_default = request.query_params.get('is_default', '').strip()
             cityname = request.query_params.get('cityname', '').strip()
-            if not cityname:
+
+            if is_default == '1':
+                city_queryset = CityList.objects.filter(is_default=True)
+            elif cityname:
+                city_queryset = CityList.objects.filter(cityname__icontains=cityname)
+            else:
                 return Response({"cities": []}, status=status.HTTP_200_OK)
 
-            city_queryset = CityList.objects.filter(cityname__icontains=cityname)
             cities = [
                 {"id": city.id, "cityname": city.cityname, "country": city.country}
                 for city in city_queryset
             ]
             return Response({"cities": cities}, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
@@ -166,3 +172,63 @@ class GetUserProfileView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        
+class AddFavoriteCityView(APIView):
+    def post(self, request):
+        try:
+            user_id = request.session.get('user_id')
+            if not user_id:
+                return Response({"error": "User not logged in"}, status=status.HTTP_404_NOT_FOUND)
+
+            city_id = request.data.get("cityid")
+            if not city_id:
+                return Response({"error": "Missing 'cityid'"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Check if city exists
+            city = CityList.objects.filter(id=city_id).first()
+            if not city:
+                return Response({"error": "City not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Prevent duplicates
+            existing = UserFavorite.objects.filter(user_id=user_id, city_id=city_id).first()
+            if not existing:
+                UserFavorite.objects.create(user_id=user_id, city_id=city_id)
+
+            return Response({
+                "favorite_cities": _get_favorite_cities(user_id)
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DelFavoriteCityView(APIView):
+    def delete(self, request):
+        try:
+            user_id = request.session.get('user_id')
+            if not user_id:
+                return Response({"error": "User not logged in"}, status=status.HTTP_404_NOT_FOUND)
+
+            city_id = request.data.get("cityid")
+            if not city_id:
+                return Response({"error": "Missing 'cityid'"}, status=status.HTTP_404_NOT_FOUND)
+
+            UserFavorite.objects.filter(user_id=user_id, city_id=city_id).delete()
+
+            return Response({
+                "favorite_cities": _get_favorite_cities(user_id)
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+def _get_favorite_cities(user_id):
+    favorites = UserFavorite.objects.filter(user_id=user_id)
+    city_ids = [fav.city_id for fav in favorites]
+    cities = CityList.objects.filter(id__in=city_ids)
+
+    return [
+        {"id": city.id, "cityname": city.cityname, "country": city.country}
+        for city in cities
+    ]
