@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import WeatherView from "../views/WeatherView.vue";
+import DetailsView from "../views/DetailsView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
+    path: "/home",
     name: "home",
     component: HomeView,
   },
@@ -18,9 +21,24 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
-    path: "/weather",
+    path: "/",
     name: "weather",
     component: WeatherView,
+  },
+  {
+    path: "/details",
+    name: "details",
+    component: DetailsView,
+  },
+  {
+    path: "/Login",
+    name: "Login",
+    component: LoginView,
+  },
+  {
+    path: "/Register",
+    name: "Register",
+    component: RegisterView,
   },
 ];
 

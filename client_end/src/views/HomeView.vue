@@ -2,9 +2,9 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-    <!-- 添加按钮 -->
+    <!-- TODO : JUST FOR TESTING, WILL DELETE -->
     <button @click="goToWeatherPage" class="weather-button">
-      Check the Weather Now 🌤️
+      Check the Weather Now
     </button>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
-import { useRouter } from "vue-router"; // 使用 Vue Router 的导航功能
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "HomeView",
@@ -22,9 +22,9 @@ export default defineComponent({
   setup() {
     const router = useRouter();
 
-    // 跳转到天气页面的方法
+    // jump to weather page
     const goToWeatherPage = () => {
-      router.push("/weather"); // 或使用名称 router.push({ name: 'weather' })
+      router.push("/weather");
     };
 
     return {

@@ -1,7 +1,3 @@
-// src/dao/weatherDao.ts
-
-// 1. Define the weather Data
-// TODO: modify this after negotiate with James
 interface WeatherData {
   city: string;
   temp: string;
@@ -10,8 +6,6 @@ interface WeatherData {
   low: string;
 }
 
-// 2. Mocked local data (to replace the real API)
-// TODO: modify this after negotiate with James
 const mockData = {
   favorites: [
     {
@@ -26,6 +20,20 @@ const mockData = {
       temp: "16°",
       condition: "Clear",
       high: "28°",
+      low: "16°",
+    },
+    {
+      city: "Wellington",
+      temp: "21°",
+      condition: "Foggy",
+      high: "24°",
+      low: "18°",
+    },
+    {
+      city: "ChristChurch",
+      temp: "18°",
+      condition: "Frosty",
+      high: "19°",
       low: "16°",
     },
   ],
@@ -48,16 +56,46 @@ const mockData = {
   ],
 };
 
-// 3. Achieve Dao method
+import axios from "axios";
+export async function getCurrentTime() {
+  const response = await axios.get("/getStatus/");
+  return response.data;
+}
+
+export async function getCityInfo(str: string) {
+  const response = await axios.get("/SearchCityByName/", {
+    params: {
+      cityname: str,
+    },
+  });
+  return response.data.cities;
+}
+
+export async function getCityInfoById(id: number) {
+  const response = await axios.get("/GetCurrentWeatherByCity/", {
+    params: {
+      id: id,
+    },
+  });
+  return response.data;
+}
+
+export async function getCityForecastInfoById(id: number) {
+  const response = await axios.get("/GetForecastWeatherByCity/", {
+    params: {
+      id: id,
+    },
+  });
+  return response.data;
+}
+
 export default {
-  // Get favorite cities' weather
   getFavorites(): Promise<WeatherData[]> {
     return new Promise((resolve) => {
-      setTimeout(() => resolve(mockData.favorites), 500); // 模拟网络延迟
+      setTimeout(() => resolve(mockData.favorites), 500); // mock latency
     });
   },
 
-  // Get hot cities' weather
   getHotCities(): Promise<WeatherData[]> {
     return new Promise((resolve) => {
       setTimeout(() => resolve(mockData.hotCities), 500);
