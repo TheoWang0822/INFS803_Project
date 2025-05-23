@@ -45,3 +45,11 @@ sqlite3 db.sqlite3
 ```sql
 select * from api_citylist limit 10; #Check top 10 cities from citylist table
 ```
+
+### Delopyment
+1. Run server
+```shell
+cd /home/ec2-user/INFS803_Project/server/weather_api
+source venv/bin/activate
+gunicorn -w 4 -b 0.0.0.0:8080 weather_api.wsgi:application
+```
