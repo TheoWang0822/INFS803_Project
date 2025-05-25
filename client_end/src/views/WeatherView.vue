@@ -2,19 +2,21 @@
   <div class="weather-app">
     <!-- favorite cities -->
     <main class="content">
-      <h1>Your favorites</h1>
-      <div class="grid-container">
-        <div
-          v-for="(city, index) in favorites"
-          :key="index"
-          class="weather-card"
-        >
-          <div class="city-header">
-            <h2>{{ city.city }}</h2>
-            <span class="temp">{{ city.temp }}</span>
+      <div v-if="!userInfo">
+        <h1>Your favorites</h1>
+        <div class="grid-container">
+          <div
+            v-for="(city, index) in favorites"
+            :key="index"
+            class="weather-card"
+          >
+            <div class="city-header">
+              <h2>{{ city.city }}</h2>
+              <span class="temp">{{ city.temp }}</span>
+            </div>
+            <div class="condition">{{ city.condition }}</div>
+            <div class="high-low">H:{{ city.high }} L:{{ city.low }}</div>
           </div>
-          <div class="condition">{{ city.condition }}</div>
-          <div class="high-low">H:{{ city.high }} L:{{ city.low }}</div>
         </div>
       </div>
 
@@ -41,11 +43,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onBeforeUnmount } from "vue";
 import weatherDao from "@/dao/weatherDao"; // key : get data via Dao
 ////////////////////////////////////////////////////////////
 import { ref, onMounted } from "vue";
-import { getCurrentTime } from "@/dao/weatherDao";
+import { getAllHotCityInfo } from "@/dao/weatherDao";
+import { GetUserInfo } from "@/dao/userDao";
 
 /////////////////////////////////////////////////////
 
@@ -61,12 +64,36 @@ export default defineComponent({
   setup() {
     const favorites = ref<WeatherData[]>([]);
     const hotCities = ref<WeatherData[]>([]);
+    const hotCityList = ref<any>(null);
+    const userInfo = ref<null | { username: string }>(null);
     onMounted(async () => {
       favorites.value = await weatherDao.getFavorites();
+      hotCityList.value = await getAllHotCityInfo();
+      console.log("热门城市: ", hotCityList.value);
+      checkIsLoggedIn();
+      window.addEventListener("user-logged-in", checkIsLoggedIn);
+      window.addEventListener("user-logged-out", checkIsLoggedIn);
     });
+    onBeforeUnmount(() => {
+      window.removeEventListener("user-logged-in", checkIsLoggedIn);
+      window.removeEventListener("user-logged-out", checkIsLoggedIn);
+    });
+    async function checkIsLoggedIn() {
+      try {
+        userInfo.value = await GetUserInfo();
+        if (userInfo.value != null) {
+          //console.log("这是测试数据1: ", userInfo.value);
+        } else {
+          //console.log("这是测试数据2: ", userInfo.value);
+        }
+      } catch {
+        userInfo.value = null;
+      }
+    }
     return {
       favorites,
       hotCities,
+      userInfo,
     };
   },
 });
@@ -80,56 +107,63 @@ export default defineComponent({
   border-radius: 8px;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-top: 20px;
-}
-
 .weather-card {
-  background: white;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.15);
+  color: #ffffff;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .weather-card:hover {
-  transform: translateY(-3px); /* hover */
+  transform: scale(1.03);
+  box-shadow: 0 8px 28px rgba(0, 255, 255, 0.25);
 }
 
-/* font */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
 .city-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .temp {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: #42b983;
+  color: #00ffe1;
+  text-shadow: 0 0 6px #00ffe1;
 }
 
 .high-low {
-  color: #666;
-  margin-top: 8px;
-  font-size: 0.9rem;
-}
-
-.nav-bar {
+  color: #ccc;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: 300;
 }
 
 .content h1 {
   text-align: left;
-  margin-left: 0;
-  margin-top: 30px;
-  padding-left: 0;
-  font-size: 1.8rem;
-  color: #2c3e50;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 0.5rem;
+  margin-top: 40px;
+  font-size: 2rem;
+  color: #00ffe1;
+  border-bottom: 2px solid #00ffe1;
+  padding-bottom: 8px;
+  text-shadow: 0 0 4px #00ffe1;
+}
+
+.weather-app {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+  padding: 40px;
 }
 </style>

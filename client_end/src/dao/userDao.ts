@@ -18,8 +18,6 @@ export async function GetUserInfo() {
     const res = await api.get("/GetUserProfile/", {
       withCredentials: true,
     });
-    console.log("测试数据11:", res);
-    console.log("测试数据22:", isEmptyObject(res.data));
     if (isEmptyObject(res.data)) {
       return null;
     }
@@ -92,6 +90,7 @@ export async function Logout(cb: () => void) {
   });
   try {
     await api.post("/Logout/", {}, { withCredentials: true });
+    window.dispatchEvent(new Event("user-logged-out"));
   } finally {
     cb();
   }

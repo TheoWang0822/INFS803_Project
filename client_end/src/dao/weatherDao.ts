@@ -71,6 +71,15 @@ export async function getCityInfo(str: string) {
   return response.data.cities;
 }
 
+export async function getAllHotCityInfo() {
+  const response = await axios.get("/SearchCityByName/", {
+    params: {
+      is_default: 0,
+    },
+  });
+  return response.data.cities;
+}
+
 export async function getCityInfoById(id: number) {
   const response = await axios.get("/GetCurrentWeatherByCity/", {
     params: {

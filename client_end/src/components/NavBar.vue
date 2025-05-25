@@ -176,53 +176,68 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 15px 20px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #ddd;
-  margin: 0;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   width: 100vw;
   box-sizing: border-box;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.1);
 }
 
 .back-button {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: transform 0.2s ease;
 }
 
 .back-button:hover {
-  opacity: 0.7;
+  transform: scale(1.1);
 }
 
 .nav-links {
   font-size: 1.2rem;
+  color: #ffffff;
 }
 
 .nav-links a {
-  color: #2c3e50;
+  color: #00ffe1;
   text-decoration: none;
+  margin: 0 10px;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #00bfa6;
 }
 
 .nav-links a.router-link-exact-active {
-  color: #42b983;
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .input-pos {
-  flex: 10;
+  flex: 1;
   display: flex;
   justify-content: center;
-  padding-right: 150px;
+  padding-right: 160px;
 }
 
 .login {
   display: flex;
   align-items: center;
   cursor: pointer;
-  gap: 6px;
-  font-size: 20px;
-  color: #333;
+  gap: 8px;
+  font-size: 18px;
+  color: #00ffe1;
   position: absolute;
-  right: 60px;
+  right: 40px;
+  transition: color 0.2s ease;
+}
+
+.login:hover {
+  color: #00bfa6;
 }
 </style>
