@@ -164,6 +164,7 @@ export default defineComponent({
   color: #ffffff;
   transition: transform 0.3s, box-shadow 0.3s;
   min-width: 240px;
+  max-width: 360px;
 
   display: flex;
   flex-direction: column;
@@ -200,7 +201,7 @@ export default defineComponent({
 }
 
 .city-header h2 {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 700;
   margin: 0;
   padding: 0;
@@ -236,12 +237,14 @@ export default defineComponent({
 }
 
 .high-low {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 300;
   display: flex;
-  justify-content: center;
-  gap: 24px;
+  justify-content: flex-start;
+  gap: 16px;
   margin-top: 4px;
+  color: #00ffe1;
+  text-shadow: 0 0 3px #00ffe1;
 }
 
 /* 核心更新：右侧信息网格 */
@@ -249,11 +252,11 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(2, auto auto);
   grid-template-rows: repeat(2, auto);
-  column-gap: 200px;
-  row-gap: 50px;
+  column-gap: 150px;
+  row-gap: 20px;
   width: 100%;
   padding: 0 20px;
-  margin-top: 30px;
+  margin-top: 50px;
   width: auto;
 }
 

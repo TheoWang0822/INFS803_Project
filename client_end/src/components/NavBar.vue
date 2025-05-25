@@ -3,7 +3,7 @@
   <nav class="nav-bar">
     <img
       v-if="showBackButton"
-      src="/images/weather-app.png"
+      src="/images/logo2.png"
       alt=""
       class="back-button"
       @click="goToHome"
@@ -23,7 +23,6 @@
         :not-found-content="fetching ? 'Loading...' : null"
         @search="handleSearch"
         @change="handleSelect"
-        style="width: 400px"
       />
     </div>
     <div class="login">
@@ -172,6 +171,7 @@ export default defineComponent({
   top: 0;
   left: 0;
   right: 0;
+  height: 100px;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -187,10 +187,10 @@ export default defineComponent({
 }
 
 .back-button {
-  width: 34px;
-  height: 34px;
   cursor: pointer;
   transition: transform 0.2s ease;
+  height: 100%;
+  aspect-ratio: 1;
 }
 
 .back-button:hover {
@@ -204,6 +204,8 @@ export default defineComponent({
 
 .nav-links a {
   color: #00ffe1;
+  font-size: 22px;
+  font-weight: 600;
   text-decoration: none;
   margin: 0 10px;
   transition: color 0.2s;
@@ -214,7 +216,6 @@ export default defineComponent({
 }
 
 .nav-links a.router-link-exact-active {
-  font-weight: bold;
   color: #ffffff;
 }
 
@@ -222,19 +223,25 @@ export default defineComponent({
   flex: 1;
   display: flex;
   justify-content: center;
-  padding-right: 160px;
+}
+
+.input-pos .ant-select {
+  flex: 1 1 400px;
+  min-width: 50px;
+  max-width: 500px;
+  margin-right: 200px;
 }
 
 .login {
   display: flex;
-  align-items: center;
   cursor: pointer;
   gap: 8px;
-  font-size: 18px;
+  font-size: 22px;
   color: #00ffe1;
   position: absolute;
   right: 40px;
   transition: color 0.2s ease;
+  margin-right: 20px;
 }
 
 .login:hover {

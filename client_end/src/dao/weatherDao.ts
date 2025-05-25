@@ -10,28 +10,28 @@ const mockData = {
   favorites: [
     {
       city: "Auckland",
-      temp: "20°",
+      temp: "20",
       condition: "Sunny",
       high: "23°",
       low: "15°",
     },
     {
       city: "Shanghai",
-      temp: "16°",
+      temp: "16",
       condition: "Clear",
       high: "28°",
       low: "16°",
     },
     {
       city: "Wellington",
-      temp: "21°",
+      temp: "21",
       condition: "Foggy",
       high: "24°",
       low: "18°",
     },
     {
       city: "ChristChurch",
-      temp: "18°",
+      temp: "18",
       condition: "Frosty",
       high: "19°",
       low: "16°",
@@ -40,14 +40,14 @@ const mockData = {
   hotCities: [
     {
       city: "New York",
-      temp: "9°",
+      temp: "9",
       condition: "Cloudy",
       high: "9°",
       low: "1°",
     },
     {
       city: "Paris",
-      temp: "9°",
+      temp: "9",
       condition: "Partly Cloudy",
       high: "13°",
       low: "7°",
@@ -74,7 +74,7 @@ export async function getCityInfo(str: string) {
 export async function getAllHotCityInfo() {
   const response = await axios.get("/SearchCityByName/", {
     params: {
-      is_default: 0,
+      is_default: 1,
     },
   });
   return response.data.cities;
