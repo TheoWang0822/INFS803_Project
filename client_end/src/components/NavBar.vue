@@ -80,6 +80,7 @@ export default defineComponent({
         userInfo.value = null;
       };
       Logout(logoutCB);
+      router.push("/");
     }
     onMounted(() => {
       checkIsLoggedIn();

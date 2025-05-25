@@ -1,20 +1,23 @@
 <template>
   <div class="weather-app">
     <main class="content">
-      <div v-if="!userInfo">
+      <div v-if="userInfo != null && hotFavCityWeatherList.length">
         <h1>Your favorites</h1>
         <div class="grid-container">
           <div
-            v-for="(city, index) in favorites"
+            v-for="(city, index) in hotFavCityWeatherList"
             :key="index"
             class="weather-card"
+            @click="OnHotCityClick(city)"
           >
             <div class="city-header">
-              <h2>{{ city.city }}</h2>
+              <h2>{{ city.cityname }}</h2>
               <span class="temp">{{ city.temp }}℃</span>
             </div>
-            <div class="condition">{{ city.condition }}</div>
-            <div class="high-low">H:{{ city.high }} L:{{ city.low }}</div>
+            <div class="condition">{{ city.simp_desc }}</div>
+            <div class="high-low">
+              H:{{ city.temp_max }} L:{{ city.temp_min }}
+            </div>
           </div>
         </div>
       </div>
@@ -29,6 +32,7 @@
             v-for="(city, index) in hotCityWeatherList"
             :key="'hot-' + index"
             class="weather-card"
+            @click="OnHotCityClick(city)"
           >
             <div class="city-header">
               <h2>{{ city.cityname }}</h2>
@@ -51,8 +55,9 @@ import weatherDao from "@/dao/weatherDao"; // key : get data via Dao
 ////////////////////////////////////////////////////////////
 import { ref, onMounted } from "vue";
 import { getAllHotCityInfo, getCityInfoById } from "@/dao/weatherDao";
-import { GetUserInfo } from "@/dao/userDao";
+import { GetUserInfo, GetFavCities } from "@/dao/userDao";
 import { LoadingOutlined } from "@ant-design/icons-vue";
+import { useRouter } from "vue-router";
 
 /////////////////////////////////////////////////////
 
@@ -70,11 +75,23 @@ export default defineComponent({
     LoadingOutlined,
   },
   setup() {
+    const router = useRouter();
     const favorites = ref<WeatherData[]>([]);
     const hotCities = ref<WeatherData[]>([]);
     const hotCityList = ref<any>(null);
     const hotCityWeatherList = ref<any[]>([]);
+    const hotFavCityWeatherList = ref<any[]>([]);
     const userInfo = ref<null | { username: string }>(null);
+    const OnHotCityClick = (city: any) => {
+      if (userInfo.value != null) {
+        router.push({
+          name: "details",
+          query: { id: city.id },
+        });
+        return;
+      }
+      router.push("/login");
+    };
     onMounted(async () => {
       favorites.value = await weatherDao.getFavorites();
       hotCityList.value = await getAllHotCityInfo();
@@ -93,21 +110,35 @@ export default defineComponent({
       hotCityWeatherList.value = result;
       console.log(hotCityWeatherList.value);
 
-      checkIsLoggedIn();
+      await checkIsLoggedIn();
       window.addEventListener("user-logged-in", checkIsLoggedIn);
       window.addEventListener("user-logged-out", checkIsLoggedIn);
+
+      const weatherArr: any[] = [];
+
+      const raw = await GetFavCities();
+      const favCities = Array.isArray(raw) ? raw : [];
+      for (const city of favCities) {
+        const weather = await getCityInfoById(city.id);
+        weather.cityname = city.cityname;
+        weather.country = city.country;
+        weatherArr.push(weather);
+      }
+      hotFavCityWeatherList.value = weatherArr;
+      console.log("..........", hotFavCityWeatherList.value);
     });
     onBeforeUnmount(() => {
       window.removeEventListener("user-logged-in", checkIsLoggedIn);
       window.removeEventListener("user-logged-out", checkIsLoggedIn);
     });
     async function checkIsLoggedIn() {
+      const result: any[] = [];
       try {
         userInfo.value = await GetUserInfo();
         if (userInfo.value != null) {
-          //console.log("这是测试数据1: ", userInfo.value);
+          console.log("这是测试数据1: ", userInfo.value);
         } else {
-          //console.log("这是测试数据2: ", userInfo.value);
+          console.log("这是测试数据2: ", userInfo.value);
         }
       } catch {
         userInfo.value = null;
@@ -118,6 +149,8 @@ export default defineComponent({
       hotCities,
       userInfo,
       hotCityWeatherList,
+      OnHotCityClick,
+      hotFavCityWeatherList,
     };
   },
 });

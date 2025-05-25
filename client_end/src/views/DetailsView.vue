@@ -3,6 +3,7 @@ import { useRoute } from "vue-router";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import weatherDao, { getCityForecastInfoById } from "@/dao/weatherDao";
 import { LoadingOutlined } from "@ant-design/icons-vue";
+import { GetUserInfoFav, addFav, delFav } from "@/dao/userDao";
 
 export default defineComponent({
   components: {
@@ -10,11 +11,15 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const q = route.query.id;
+    const cityId = Number(Array.isArray(q) ? q[0] : q);
     const data = ref({});
     const allData = ref<any>(null);
     const currentDetail = ref<any>(null);
     const forecastDetail = ref<any>(null);
     const isLoaded = ref(false);
+    const subscribed = ref(false);
+    const userInfo = ref<null | { username: string }>(null);
     const toEnglishDate = (dateString: string) => {
       const date = new Date(dateString);
       const day = date.getDate().toString().padStart(2, "0");
@@ -23,14 +28,41 @@ export default defineComponent({
       });
       return `${day}-${month}`;
     };
+    async function checkSubscribed() {
+      try {
+        userInfo.value = await GetUserInfoFav(cityId);
+        if (userInfo.value != null) {
+          //TODO: 不为空代表关注了
+          subscribed.value = true;
+        } else {
+          // TODO: 代表没关注
+          subscribed.value = false;
+        }
+      } catch {
+        userInfo.value = null;
+      }
+    }
+    const onBtnClick = async () => {
+      if (subscribed.value) {
+        //TODO: 已订阅
+        await delFav(cityId, cbDel);
+        return;
+      }
+      //TODO: 未订阅
+      await addFav(cityId, cbAdd);
+    };
+
+    const cbAdd = () => {
+      subscribed.value = true;
+    };
+    const cbDel = () => {
+      subscribed.value = false;
+    };
 
     // seal method to handle page information change
     const handleQueryData = async () => {
       data.value = route.query;
-      const id = Array.isArray(route.query.id)
-        ? route.query.id[0]
-        : route.query.id;
-      allData.value = await getCityForecastInfoById(Number(id));
+      allData.value = await getCityForecastInfoById(Number(cityId));
       currentDetail.value = allData.value.basic;
       forecastDetail.value = allData.value.forecast;
       isLoaded.value = true;
@@ -40,6 +72,7 @@ export default defineComponent({
     onMounted(async () => {
       isLoaded.value = false;
       handleQueryData();
+      checkSubscribed();
     });
 
     // listener
@@ -56,6 +89,8 @@ export default defineComponent({
       isLoaded,
       toEnglishDate,
       forecastDetail,
+      onBtnClick,
+      subscribed,
     };
   },
 });
@@ -65,16 +100,23 @@ export default defineComponent({
   <div v-if="isLoaded" class="weather-app">
     <main class="content">
       <h1>City Information</h1>
-      <h2>Today</h2>
+      <div class="today-bar">
+        <h2>Today</h2>
+      </div>
       <div class="grid-currentDetail">
         <div class="weather-card detail-cards">
           <div class="city-header">
             <h2>{{ currentDetail.cityname }}</h2>
             <span class="temp">{{ currentDetail.temp }}℃</span>
           </div>
-          <div class="condition">{{ currentDetail.simp_desc }}</div>
-          <div class="high-low">
+          <div class="condition">
+            {{ currentDetail.simp_desc }}
+          </div>
+          <div class="high-low today-bar">
             H:{{ currentDetail.temp_max }} L:{{ currentDetail.temp_min }}
+            <a-button type="primary" class="fav-btn" @click="onBtnClick">
+              {{ subscribed ? "unFav&nbsp;" : "Save&nbsp;to&nbsp;Fav" }}
+            </a-button>
           </div>
         </div>
         <div class="right-blocks-wrapper">
@@ -274,5 +316,32 @@ export default defineComponent({
   margin-top: 50px;
   color: #00ffe1;
   text-align: center;
+}
+
+.today-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin-top: 30px;
+}
+
+.today-bar h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #00ffe1;
+  text-shadow: 0 0 6px #00ffe1;
+}
+
+/* ------- 按钮本身 ------- */
+:deep(.fav-btn) {
+  background: #00ffe1;
+  border: none;
+  color: #0c111b;
+  font-weight: 600;
+}
+
+:deep(.fav-btn:hover) {
+  background: #00bfa6;
 }
 </style>
