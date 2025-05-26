@@ -3,10 +3,45 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     proxy: {
-      "^/api": {
-        target: process.env.VUE_APP_API_URL,
+      "/GetStatus": {
+        target: "http://localhost:8080",
         changeOrigin: true,
-        pathRewrite: { "^/api": "" },
+      },
+      "/SearchCityByName": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/GetCurrentWeatherByCity": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/GetForecastWeatherByCity": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/Login": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/Register": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/GetUserProfile": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/Logout": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/AddFavoriteCity": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/DelFavoriteCity": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
       },
     },
   },

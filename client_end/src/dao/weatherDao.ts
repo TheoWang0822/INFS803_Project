@@ -58,12 +58,12 @@ const mockData = {
 
 import axios from "axios";
 export async function getCurrentTime() {
-  const response = await axios.get("/api/getStatus/");
+  const response = await axios.get("/getStatus/");
   return response.data;
 }
 
 export async function getCityInfo(str: string) {
-  const response = await axios.get("/api/SearchCityByName/", {
+  const response = await axios.get("/SearchCityByName/", {
     params: {
       cityname: str,
     },
@@ -72,7 +72,7 @@ export async function getCityInfo(str: string) {
 }
 
 export async function getAllHotCityInfo() {
-  const response = await axios.get("/api/SearchCityByName/", {
+  const response = await axios.get("/SearchCityByName/", {
     params: {
       is_default: 1,
     },
@@ -81,7 +81,7 @@ export async function getAllHotCityInfo() {
 }
 
 export async function getCityInfoById(id: number) {
-  const response = await axios.get("/api/GetCurrentWeatherByCity/", {
+  const response = await axios.get("/GetCurrentWeatherByCity/", {
     params: {
       id: id,
     },
@@ -90,7 +90,7 @@ export async function getCityInfoById(id: number) {
 }
 
 export async function getCityForecastInfoById(id: number) {
-  const response = await axios.get("/api/GetForecastWeatherByCity/", {
+  const response = await axios.get("/GetForecastWeatherByCity/", {
     params: {
       id: id,
     },
