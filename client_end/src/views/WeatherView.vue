@@ -78,7 +78,7 @@ export default defineComponent({
     const router = useRouter();
     const favorites = ref<WeatherData[]>([]);
     const hotCities = ref<WeatherData[]>([]);
-    const hotCityList = ref<any>(null);
+    const hotCityList = ref<any[]>([]);
     const hotCityWeatherList = ref<any[]>([]);
     const hotFavCityWeatherList = ref<any[]>([]);
     const userInfo = ref<null | { username: string }>(null);
