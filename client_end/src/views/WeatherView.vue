@@ -97,7 +97,7 @@ export default defineComponent({
       hotCityList.value = await getAllHotCityInfo();
 
       const result: any[] = [];
-
+      console.log(hotCityList);
       for (const city of hotCityList.value) {
         try {
           const weather = await getCityInfoById(city.id);
