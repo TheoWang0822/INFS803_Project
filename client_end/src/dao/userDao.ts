@@ -15,7 +15,7 @@ function isEmptyObject(obj: any): boolean {
 export async function GetUserInfo() {
   const api = creatAPI();
   try {
-    const res = await api.get("/GetUserProfile/", {
+    const res = await api.get("/api/GetUserProfile/", {
       withCredentials: true,
     });
     if (isEmptyObject(res.data)) {
@@ -31,7 +31,7 @@ export async function GetUserInfo() {
 export async function GetFavCities() {
   const api = creatAPI();
   try {
-    const res = await api.get("/GetUserProfile/", {
+    const res = await api.get("/api/GetUserProfile/", {
       withCredentials: true,
     });
     if (isEmptyObject(res.data)) {
@@ -48,7 +48,7 @@ export async function GetFavCities() {
 export async function GetUserInfoFav(id: number) {
   const api = creatAPI();
   try {
-    const res = await api.get("/GetUserProfile/", {
+    const res = await api.get("/api/GetUserProfile/", {
       withCredentials: true,
     });
     for (let i = 0; i < res.data.favorite_cities.length; i++) {
@@ -71,7 +71,7 @@ export async function Register(
   cb: () => void
 ) {
   try {
-    const data = await axios.post("/Register/", {
+    const data = await axios.post("/api/Register/", {
       username,
       password,
       avatar_id,
@@ -96,7 +96,7 @@ export async function Login(
 ) {
   try {
     const data = await axios.post(
-      "/Login/",
+      "/api/Login/",
       {
         username,
         password,
@@ -124,7 +124,7 @@ export async function Logout(cb: () => void) {
     withCredentials: true,
   });
   try {
-    await api.post("/Logout/", {}, { withCredentials: true });
+    await api.post("/api/Logout/", {}, { withCredentials: true });
     window.dispatchEvent(new Event("user-logged-out"));
   } finally {
     cb();
@@ -134,7 +134,7 @@ export async function Logout(cb: () => void) {
 export async function addFav(cityId: number, cb: () => void) {
   try {
     const data = await axios.post(
-      "/AddFavoriteCity/",
+      "/api/AddFavoriteCity/",
       {
         cityid: cityId,
       },
@@ -156,7 +156,7 @@ export async function addFav(cityId: number, cb: () => void) {
 
 export async function delFav(cityId: number, cb: () => void) {
   try {
-    const data = await axios.delete("/DelFavoriteCity/", {
+    const data = await axios.delete("/api/DelFavoriteCity/", {
       data: { cityid: cityId },
       withCredentials: true,
     });
