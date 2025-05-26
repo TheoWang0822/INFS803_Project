@@ -35,6 +35,14 @@ module.exports = defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/AddFavoriteCity": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/DelFavoriteCity": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
     },
   },
 });

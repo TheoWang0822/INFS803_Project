@@ -18,12 +18,45 @@ export async function GetUserInfo() {
     const res = await api.get("/GetUserProfile/", {
       withCredentials: true,
     });
-    console.log("测试数据11:", res);
-    console.log("测试数据22:", isEmptyObject(res.data));
     if (isEmptyObject(res.data)) {
       return null;
     }
     return res.data;
+  } catch (error) {
+    console.error("GetUserInfo error: ", error);
+  }
+  return null;
+}
+
+export async function GetFavCities() {
+  const api = creatAPI();
+  try {
+    const res = await api.get("/GetUserProfile/", {
+      withCredentials: true,
+    });
+    if (isEmptyObject(res.data)) {
+      return null;
+    }
+    return res.data.favorite_cities;
+  } catch (error) {
+    console.error("GetUserInfo error: ", error);
+    return [];
+  }
+  return null;
+}
+
+export async function GetUserInfoFav(id: number) {
+  const api = creatAPI();
+  try {
+    const res = await api.get("/GetUserProfile/", {
+      withCredentials: true,
+    });
+    for (let i = 0; i < res.data.favorite_cities.length; i++) {
+      if (res.data.favorite_cities[i].id === id) {
+        return res.data.favorite_cities[i];
+      }
+    }
+    return null;
   } catch (error) {
     console.error("GetUserInfo error: ", error);
   }
@@ -92,7 +125,49 @@ export async function Logout(cb: () => void) {
   });
   try {
     await api.post("/Logout/", {}, { withCredentials: true });
+    window.dispatchEvent(new Event("user-logged-out"));
   } finally {
     cb();
+  }
+}
+
+export async function addFav(cityId: number, cb: () => void) {
+  try {
+    const data = await axios.post(
+      "/AddFavoriteCity/",
+      {
+        cityid: cityId,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    if (data.status == 200) {
+      console.log("增加成功");
+      cb();
+    } else {
+      alert("增加失败");
+    }
+  } catch (error) {
+    console.log("增加出错了");
+    console.log(error);
+  }
+}
+
+export async function delFav(cityId: number, cb: () => void) {
+  try {
+    const data = await axios.delete("/DelFavoriteCity/", {
+      data: { cityid: cityId },
+      withCredentials: true,
+    });
+    if (data.status == 200) {
+      console.log("减去成功");
+      cb();
+    } else {
+      alert("减去失败");
+    }
+  } catch (error) {
+    console.log("减去出错了");
+    console.log(error);
   }
 }

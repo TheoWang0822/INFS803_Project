@@ -3,7 +3,7 @@
   <nav class="nav-bar">
     <img
       v-if="showBackButton"
-      src="/images/weather-app.png"
+      src="/images/logo2.png"
       alt=""
       class="back-button"
       @click="goToHome"
@@ -23,7 +23,6 @@
         :not-found-content="fetching ? 'Loading...' : null"
         @search="handleSearch"
         @change="handleSelect"
-        style="width: 400px"
       />
     </div>
     <div class="login">
@@ -81,6 +80,7 @@ export default defineComponent({
         userInfo.value = null;
       };
       Logout(logoutCB);
+      router.push("/");
     }
     onMounted(() => {
       checkIsLoggedIn();
@@ -172,57 +172,80 @@ export default defineComponent({
   top: 0;
   left: 0;
   right: 0;
+  height: 100px;
   z-index: 1000;
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 15px 20px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #ddd;
-  margin: 0;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   width: 100vw;
   box-sizing: border-box;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.1);
 }
 
 .back-button {
-  width: 30px;
-  height: 30px;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: transform 0.2s ease;
+  height: 100%;
+  aspect-ratio: 1;
 }
 
 .back-button:hover {
-  opacity: 0.7;
+  transform: scale(1.1);
 }
 
 .nav-links {
   font-size: 1.2rem;
+  color: #ffffff;
 }
 
 .nav-links a {
-  color: #2c3e50;
+  color: #00ffe1;
+  font-size: 22px;
+  font-weight: 600;
   text-decoration: none;
+  margin: 0 10px;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #00bfa6;
 }
 
 .nav-links a.router-link-exact-active {
-  color: #42b983;
+  color: #ffffff;
 }
 
 .input-pos {
-  flex: 10;
+  flex: 1;
   display: flex;
   justify-content: center;
-  padding-right: 150px;
+}
+
+.input-pos .ant-select {
+  flex: 1 1 400px;
+  min-width: 50px;
+  max-width: 500px;
+  margin-right: 200px;
 }
 
 .login {
   display: flex;
-  align-items: center;
   cursor: pointer;
-  gap: 6px;
-  font-size: 20px;
-  color: #333;
+  gap: 8px;
+  font-size: 22px;
+  color: #00ffe1;
   position: absolute;
-  right: 60px;
+  right: 40px;
+  transition: color 0.2s ease;
+  margin-right: 20px;
+}
+
+.login:hover {
+  color: #00bfa6;
 }
 </style>

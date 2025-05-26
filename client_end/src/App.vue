@@ -17,12 +17,12 @@ export default defineComponent({
 </script>
 
 <style>
+html,
+body,
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  background: linear-gradient(135deg, #1b2735 0%, #090a0f 100%);
+  height: 100%;
+  margin: 0;
 }
 
 nav {
