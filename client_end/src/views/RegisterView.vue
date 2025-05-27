@@ -38,7 +38,7 @@
         </div>
       </div>
     </div>
-
+    <div ref="recaptchaRef"></div>
     <a-button type="primary" :disabled="!canSubmit" @click="OnSubmitClicked"
       >Register</a-button
     >
@@ -46,27 +46,47 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, computed } from "vue";
+import { watch, ref, computed, onMounted } from "vue";
 import { Register } from "@/dao/userDao";
 import router from "@/router";
 const username = ref<string>("");
 const password = ref<string>("");
 const rePassword = ref<string>("");
 const email = ref<string>("");
-// 默认选中第 1 个头像
 const avatarId = ref(1);
+const recaptchaRef = ref<HTMLElement | null>(null);
+const recaptchaWidgetId = ref<number | null>(null);
+const siteKey = "6LcYLEwrAAAAAIJLwBN28hVFAyMI6KQO1_azxMnK";
 const cb = () => {
   router.push("/login");
 };
+onMounted(() => {
+  if (typeof grecaptcha !== "undefined" && recaptchaRef.value) {
+    // eslint-disable-next-line no-undef
+    recaptchaWidgetId.value = grecaptcha.render(recaptchaRef.value, {
+      sitekey: siteKey,
+    });
+  }
+});
 // submit function
 const OnSubmitClicked = async () => {
-  await Register(
-    username.value,
-    password.value,
-    avatarId.value,
-    email.value,
-    cb
-  );
+  if (recaptchaWidgetId.value !== null) {
+    // eslint-disable-next-line no-undef
+    const captchaResponse = grecaptcha.getResponse(recaptchaWidgetId.value);
+    if (!captchaResponse) {
+      alert("failed to authenticate!");
+      return;
+    }
+    await Register(
+      username.value,
+      password.value,
+      avatarId.value,
+      email.value,
+      cb
+    );
+  } else {
+    alert("authentication is loading, try later");
+  }
 };
 const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const canSubmit = computed(() => {
