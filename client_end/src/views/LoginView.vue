@@ -13,6 +13,7 @@
         placeholder="Enter your password"
       />
     </div>
+    <div ref="recaptchaRef"></div>
     <a-button type="primary" @click="OnLoginClicked">Login</a-button>
     <a-button type="link" @click="OnRegisterClicked"
       >Don't have an account?</a-button
@@ -21,19 +22,42 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from "vue";
+import { watch, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/dao/userDao";
 
 const router = useRouter();
 const username = ref<string>("");
 const password = ref<string>("");
+const recaptchaRef = ref<HTMLElement | null>(null);
+const recaptchaWidgetId = ref<number | null>(null);
+const siteKey = "6LcYLEwrAAAAAIJLwBN28hVFAyMI6KQO1_azxMnK";
 const cb = () => {
   router.push("/");
 };
+
+onMounted(() => {
+  if (typeof grecaptcha !== "undefined" && recaptchaRef.value) {
+    // eslint-disable-next-line no-undef
+    recaptchaWidgetId.value = grecaptcha.render(recaptchaRef.value, {
+      sitekey: siteKey,
+    });
+  }
+});
+
 const OnLoginClicked = () => {
-  console.log("clicked");
-  Login(username.value, password.value, cb);
+  if (recaptchaWidgetId.value !== null) {
+    // eslint-disable-next-line no-undef
+    const captchaResponse = grecaptcha.getResponse(recaptchaWidgetId.value);
+
+    if (!captchaResponse) {
+      alert("failed to authenticate!");
+      return;
+    }
+    Login(username.value, password.value, cb);
+  } else {
+    alert("authentication is loading, try later");
+  }
 };
 const OnRegisterClicked = () => {
   router.push("/register");
