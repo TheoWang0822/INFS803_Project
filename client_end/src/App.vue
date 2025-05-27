@@ -4,7 +4,7 @@
     <router-link to="/about">About</router-link>-->
     <NavBar show-back-button />
   </nav>
-  <router-view />
+  <router-view :key="$route.fullPath" />
 </template>
 
 <script lang="ts">

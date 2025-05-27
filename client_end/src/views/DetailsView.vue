@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import weatherDao, { getCityForecastInfoById } from "@/dao/weatherDao";
 import { LoadingOutlined } from "@ant-design/icons-vue";
-import { GetUserInfoFav, addFav, delFav } from "@/dao/userDao";
+import { GetUserInfoFav, addFav, delFav, GetUserInfo } from "@/dao/userDao";
 
 export default defineComponent({
   components: {
@@ -19,7 +19,9 @@ export default defineComponent({
     const forecastDetail = ref<any>(null);
     const isLoaded = ref(false);
     const subscribed = ref(false);
+    const isLoggedIn = ref(false);
     const userInfo = ref<null | { username: string }>(null);
+    const temp = ref<null | { username: string }>(null);
     const toEnglishDate = (dateString: string) => {
       const date = new Date(dateString);
       const day = date.getDate().toString().padStart(2, "0");
@@ -31,6 +33,8 @@ export default defineComponent({
     async function checkSubscribed() {
       try {
         userInfo.value = await GetUserInfoFav(cityId);
+        temp.value = await GetUserInfo();
+        isLoggedIn.value = temp.value != null;
         if (userInfo.value != null) {
           //TODO: 不为空代表关注了
           subscribed.value = true;
@@ -43,6 +47,9 @@ export default defineComponent({
       }
     }
     const onBtnClick = async () => {
+      if (!isLoggedIn.value) {
+        return;
+      }
       if (subscribed.value) {
         //TODO: 已订阅
         await delFav(cityId, cbDel);
@@ -91,6 +98,7 @@ export default defineComponent({
       forecastDetail,
       onBtnClick,
       subscribed,
+      isLoggedIn,
     };
   },
 });
@@ -114,9 +122,11 @@ export default defineComponent({
           </div>
           <div class="high-low today-bar">
             H:{{ currentDetail.temp_max }} L:{{ currentDetail.temp_min }}
-            <a-button type="primary" class="fav-btn" @click="onBtnClick">
-              {{ subscribed ? "unFav&nbsp;" : "Save&nbsp;to&nbsp;Fav" }}
-            </a-button>
+            <div v-if="isLoggedIn">
+              <a-button type="primary" class="fav-btn" @click="onBtnClick">
+                {{ subscribed ? "unFav&nbsp;" : "Save&nbsp;to&nbsp;Fav" }}
+              </a-button>
+            </div>
           </div>
         </div>
         <div class="right-blocks-wrapper">

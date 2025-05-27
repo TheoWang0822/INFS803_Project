@@ -27,10 +27,21 @@
     </div>
     <div class="login">
       <template v-if="!userInfo">
-        <UserOutlined @click="onRightClicked" />
-        Login
+        <div @click="onRightClicked">
+          <UserOutlined />
+          Login
+        </div>
       </template>
-      <template v-else><UserOutlined @click="logout" /> Logout </template>
+      <template v-else
+        ><div @click="logout">
+          <img
+            :src="`/Avatar/p${userInfo.basic.avatar_id}.png`"
+            class="avatar-img"
+            alt="avatar"
+          />
+          Logout
+        </div></template
+      >
     </div>
   </nav>
 </template>
@@ -247,5 +258,12 @@ export default defineComponent({
 
 .login:hover {
   color: #00bfa6;
+}
+
+.avatar-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 </style>

@@ -24,8 +24,9 @@
 
       <section style="margin-top: 40px">
         <h1 style="font-size: 2rem">Hot city</h1>
-        <div v-if="hotCityWeatherList.length === 0" class="weather-card">
-          <h2>Loading...</h2>
+        <div v-if="hotCityWeatherList.length === 0" class="loading">
+          <loading-outlined spin style="font-size: 32px; color: #42b983" />
+          Loading...
         </div>
         <div v-else class="grid-container">
           <div
@@ -83,14 +84,14 @@ export default defineComponent({
     const hotFavCityWeatherList = ref<any[]>([]);
     const userInfo = ref<null | { username: string }>(null);
     const OnHotCityClick = (city: any) => {
-      if (userInfo.value != null) {
-        router.push({
-          name: "details",
-          query: { id: city.id },
-        });
-        return;
-      }
-      router.push("/login");
+      //if (userInfo.value != null) {
+      router.push({
+        name: "details",
+        query: { id: city.id },
+      });
+      return;
+      //}
+      //router.push("/login");
     };
     onMounted(async () => {
       favorites.value = await weatherDao.getFavorites();
